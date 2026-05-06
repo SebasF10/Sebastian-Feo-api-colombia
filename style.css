@@ -452,3 +452,52 @@ main {
   .cards-grid { grid-template-columns: 1fr; }
   .datos-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+
+/* ============================================
+   TARJETAS - PRESIDENTES
+   (Pegar al final de style.css)
+   ============================================ */
+ 
+/* Header especial con foto */
+.pres-header {
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+}
+ 
+.pres-foto-wrap {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--amarillo);
+  background: rgba(255,255,255,0.15);
+}
+ 
+.pres-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+ 
+.pres-header-info {
+  flex: 1;
+  min-width: 0;
+}
+ 
+.pres-header-info .card-title {
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+ 
+.pres-badge {
+  font-size: 0.78rem;
+  background: rgba(255,255,255,0.15);
+  color: var(--blanco);
+  border: 1px solid rgba(255,255,255,0.3);
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presidentes de Colombia</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <nav class="top-nav">
+      <a href="index.html" class="back-link">← Inicio</a>
+      <div style="display:flex; gap:0.6rem;">
+        <a href="turismo.html" class="nav-link">🏔️ Turismo</a>
+        <a href="colombia.html" class="nav-link">🇨🇴 Colombia</a>
+      </div>
+    </nav>
+    <h1>🏛️ Presidentes de Colombia</h1>
+    <p>Historia política de Colombia a través de sus mandatarios</p>
+  </header>
+
+  <!-- CONTADOR -->
+  <div id="contador" class="contador hidden"></div>
+
+  <!-- ESTADO: CARGANDO -->
+  <div id="loading" class="loading-msg">
+    <div class="spinner"></div>
+    <p>Cargando presidentes...</p>
+  </div>
+
+  <!-- ESTADO: ERROR -->
+  <div id="error" class="error-msg hidden">
+    ⚠️ No se pudieron cargar los datos. Verifica tu conexión e intenta de nuevo.
+  </div>
+
+  <!-- CONTENEDOR DE TARJETAS -->
+  <main>
+    <div id="presidentes" class="cards-grid"></div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="page-footer">
+    <p>Datos obtenidos de <a href="https://api-colombia.com" target="_blank">api-colombia.com</a></p>
+  </footer>
+
+  <script src="presidentes.js"></script>
+</body>
+</html>

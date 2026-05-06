@@ -1,29 +1,41 @@
 // turismo.js - Guía Turística de Colombia
 // Consume la API: https://api-colombia.com/api/v1/TouristicAttraction
+// Corrección: el campo city.department viene null, se resuelve con fetch paralelo a /Department
 
-const API_URL = "https://api-colombia.com/api/v1/TouristicAttraction";
+const API_ATRACCIONES = "https://api-colombia.com/api/v1/TouristicAttraction";
+const API_DEPARTAMENTOS = "https://api-colombia.com/api/v1/Department";
 
-// Seleccionamos los elementos del DOM que vamos a necesitar
-const loadingDiv = document.getElementById("loading");
-const errorDiv = document.getElementById("error");
+// Seleccionamos los elementos del DOM
+const loadingDiv    = document.getElementById("loading");
+const errorDiv      = document.getElementById("error");
 const atraccionesDiv = document.getElementById("atracciones");
-const contadorDiv = document.getElementById("contador");
+const contadorDiv   = document.getElementById("contador");
 
 // Función principal que carga los datos
 async function cargarAtracciones() {
   try {
-    // fetch() hace la petición a la API y espera la respuesta
-    const respuesta = await fetch(API_URL);
+    // Hacemos las dos peticiones en paralelo para mayor eficiencia
+    const [respAtracciones, respDepartamentos] = await Promise.all([
+      fetch(API_ATRACCIONES),
+      fetch(API_DEPARTAMENTOS)
+    ]);
 
-    // Si la respuesta no es exitosa, lanzamos un error
-    if (!respuesta.ok) {
-      throw new Error(`Error HTTP: ${respuesta.status}`);
-    }
+    if (!respAtracciones.ok) throw new Error(`Error HTTP atracciones: ${respAtracciones.status}`);
+    if (!respDepartamentos.ok) throw new Error(`Error HTTP departamentos: ${respDepartamentos.status}`);
 
-    // Convertimos la respuesta a JSON (formato de objeto JavaScript)
-    const datos = await respuesta.json();
+    const [datos, departamentos] = await Promise.all([
+      respAtracciones.json(),
+      respDepartamentos.json()
+    ]);
 
-    // Tomamos solo los primeros 20 (requisito del extra de la opción 2)
+    // Construimos un mapa de id -> departamento para búsqueda rápida
+    // La API devuelve { id, name, regionStr, ... }
+    const mapaDepartamentos = {};
+    departamentos.forEach(dep => {
+      mapaDepartamentos[dep.id] = dep;
+    });
+
+    // Tomamos solo los primeros 20 (requisito extra opción 2)
     const primeros20 = datos.slice(0, 20);
 
     // Ocultamos el mensaje de carga
@@ -31,13 +43,12 @@ async function cargarAtracciones() {
 
     // Mostramos el contador
     contadorDiv.classList.remove("hidden");
-    contadorDiv.innerHTML = `<span> Mostrando <strong>${primeros20.length}</strong> de ${datos.length} atractivos turísticos</span>`;
+    contadorDiv.innerHTML = `<span>Mostrando <strong>${primeros20.length}</strong> de ${datos.length} atractivos turísticos</span>`;
 
-    // Mostramos las tarjetas
-    mostrarAtracciones(primeros20);
+    // Mostramos las tarjetas pasando también el mapa de departamentos
+    mostrarAtracciones(primeros20, mapaDepartamentos);
 
   } catch (error) {
-    // Si algo sale mal, ocultamos el loading y mostramos el error
     console.error("Error al cargar las atracciones:", error);
     loadingDiv.classList.add("hidden");
     errorDiv.classList.remove("hidden");
@@ -45,18 +56,23 @@ async function cargarAtracciones() {
 }
 
 // Función que crea las tarjetas en el DOM
-function mostrarAtracciones(atracciones) {
-  // Vaciamos el contenedor por si ya tenía algo
+function mostrarAtracciones(atracciones, mapaDepartamentos) {
   atraccionesDiv.innerHTML = "";
 
-  // Recorremos cada atracción y creamos una tarjeta
   atracciones.forEach((atraccion) => {
-    // Creamos el elemento div de la tarjeta
     const tarjeta = document.createElement("div");
     tarjeta.classList.add("card");
 
-    // Construimos el contenido HTML de la tarjeta
-    // Usamos || para mostrar "No disponible" si el dato no existe
+    // Obtenemos el nombre de la ciudad directamente del objeto city
+    const nombreCiudad = atraccion.city?.name || "No disponible";
+
+    // El departamento viene null en city.department, pero city.departmentId sí existe
+    // Lo buscamos en nuestro mapa local
+    const depId = atraccion.city?.departmentId;
+    const departamento = depId ? mapaDepartamentos[depId] : null;
+    const nombreDepartamento = departamento?.name || "No disponible";
+    const nombreRegion       = departamento?.regionStr || "No disponible";
+
     tarjeta.innerHTML = `
       <div class="card-header">
         <h3 class="card-title">${atraccion.name || "Sin nombre"}</h3>
@@ -65,20 +81,19 @@ function mostrarAtracciones(atracciones) {
       <div class="card-body">
         <div class="card-meta">
           <span class="meta-item">
-            🏙️ <strong>Ciudad:</strong> ${atraccion.city?.name || "No disponible"}
+            🏙️ <strong>Ciudad:</strong> ${nombreCiudad}
           </span>
           <span class="meta-item">
-            🗺️ <strong>Departamento:</strong> ${atraccion.city?.department?.name || "No disponible"}
+            🗺️ <strong>Departamento:</strong> ${nombreDepartamento}
           </span>
           <span class="meta-item">
-            🌎 <strong>Región:</strong> ${atraccion.city?.department?.regionStr || "No disponible"}
+            🌎 <strong>Región:</strong> ${nombreRegion}
           </span>
         </div>
         <p class="card-desc">${atraccion.description || "Sin descripción disponible."}</p>
       </div>
     `;
 
-    // Agregamos la tarjeta al contenedor del DOM
     atraccionesDiv.appendChild(tarjeta);
   });
 }
