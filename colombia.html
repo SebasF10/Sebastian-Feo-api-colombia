@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colombia en Datos - Portal Colombia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="page-header green-header">
+    <nav class="top-nav">
+      <a href="index.html" class="back-link">← Inicio</a>
+      <a href="turismo.html" class="nav-link">Guía Turística</a>
+    </nav>
+    <h1>📊 Colombia en Datos</h1>
+    <p>Información general y estadísticas del país</p>
+  </header>
+
+  <main>
+    <!-- Mensaje de carga -->
+    <div id="loading" class="loading-msg">
+      <div class="spinner"></div>
+      <p>Cargando información de Colombia...</p>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div id="error" class="error-msg hidden">
+      <p>⚠️ Error al cargar los datos. Por favor recarga la página.</p>
+    </div>
+
+    <!-- Contenedor de datos del país -->
+    <div id="pais-info" class="pais-container hidden"></div>
+  </main>
+
+  <footer class="page-footer">
+    <p>Datos obtenidos desde <a href="https://api-colombia.com" target="_blank">api-colombia.com</a></p>
+  </footer>
+
+  <script src="colombia.js"></script>
+</body>
+</html>

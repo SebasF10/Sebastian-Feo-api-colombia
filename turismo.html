@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Turística - Portal Colombia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="page-header">
+    <nav class="top-nav">
+      <a href="index.html" class="back-link">← Inicio</a>
+      <a href="colombia.html" class="nav-link">Colombia en Datos</a>
+    </nav>
+    <h1>🏔️ Guía Turística de Colombia</h1>
+    <p>Los mejores destinos turísticos del país</p>
+  </header>
+
+  <main>
+    <!-- Mensaje de carga -->
+    <div id="loading" class="loading-msg">
+      <div class="spinner"></div>
+      <p>Cargando atractivos turísticos...</p>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div id="error" class="error-msg hidden">
+      <p>⚠️ Error al cargar los datos. Por favor recarga la página.</p>
+    </div>
+
+    <!-- Contador -->
+    <div id="contador" class="contador hidden"></div>
+
+    <!-- Contenedor de tarjetas -->
+    <div id="atracciones" class="cards-grid"></div>
+  </main>
+
+  <footer class="page-footer">
+    <p>Datos obtenidos desde <a href="https://api-colombia.com" target="_blank">api-colombia.com</a></p>
+  </footer>
+
+  <script src="turismo.js"></script>
+</body>
+</html>
